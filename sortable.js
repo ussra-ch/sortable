@@ -11,11 +11,25 @@ let search1 = document.createElement("input")
 let table = document.createElement("table")
 let arr = ["Icon", "Name", "Full Name", "Powerstats", "Race", "Gender", "Height", "Weight", "Place Of Birth", "Alignment"]
 let thead = document.createElement("thead")
+let data
 
 for (let i of arr) {
     var th = document.createElement("th")
     thead.appendChild(th)
     th.textContent = i
+    let btn = document.createElement("button")
+    btn.className = "sort"
+    btn.textContent = "sort"
+    th.append(btn)
+    btn.addEventListener("click", () => {
+        console.log("Sorting column:", i);
+        let clickValue = globMap.get(i)
+         sortAlpha(data, clickValue)
+        // console.log(res);
+        
+        clearData();
+        create(data, data.length);
+    });
 }
 
 
@@ -34,14 +48,14 @@ op.forEach(o => {
 });
 
 b.appendChild(s)
+b.appendChild(search1)
 
 function clearData() {
     tbody.innerHTML = ""
 }
 
-function loadData(data) {
-    console.log(size);
-
+function loadData(input) {
+    data = input
     if (Array.isArray(data)) {
         create(data, size);
 
@@ -59,25 +73,19 @@ function loadData(data) {
 
     })
 
-    b.appendChild(search1)
     search1.addEventListener("input", () => {
         let res = search(data, search1.value)
-        // console.log(res)
         clearData();
         create(res, res.length)
 
     })
-    // header(data)
-    // function header(data) {
-        th.addEventListener("click", () => { 
-            let clickContent = th.textContent
-            let clickValue = globMap.get(clickContent);
-            sortAlpha(data, clickValue)
 
-        })
-// }
+        // th.addEventListener("click", () => { 
+        //     let clickContent = th.textContent
+        //     let clickValue = globMap.get(clickContent);
+        //     sortAlpha(data, clickValue)
 
-
+        // })
 };
 
 
@@ -90,7 +98,7 @@ function create(data, size) {
     let pagination = 0
     data = data.slice(pagination, size);
     data.forEach((hero, idx) => {
-        console.log(size);
+        // console.log(size);
 
         let tr = document.createElement("tr")
         let tdI = document.createElement("td")
@@ -161,9 +169,6 @@ function create(data, size) {
     table.append(tbody)
 }
 
-// Request the file with fetch, and the data will be downloaded to your browser cache.
-
-
 
 table.appendChild(thead)
 b.appendChild(table)
@@ -173,16 +178,25 @@ function getNestedValue(obj, path) {
 }
 
 function sortAlpha(data, path) {
-    let alphabet = ['abcdefjhigklmnopqrstuvwxyz']
+    let alphabet = 'abcdefjhigklmnopqrstuvwxyz'
     data.sort((heroA, heroB) => {
         heroA = getNestedValue(heroA, path)
         heroB = getNestedValue(heroB, path)
-        return (heroA[0].toLowerCase() in alphabet) - (heroB[0].toLowerCase() in alphabet)
+        if (heroA == "" && heroB == ""){
+            return 0
+        }else if (heroA == ""){
+            return 1
+        }else if (heroB == ""){
+            return -1
+        }
+        // console.log(heroA[0]);
+        // console.log(heroB[0]);
+            return alphabet.indexOf(heroA[0].toLowerCase()) - alphabet.indexOf(heroB[0].toLowerCase())
     })
 }
 
 let globMap = new Map([
-    ["name", "name"],
+    ["Name", "name"],
     ["Full Name", "biography.fullName"],
     ["Powerstats", "powerstats"],
     ["Race", "appearance.race"],
@@ -192,4 +206,5 @@ let globMap = new Map([
     ["Place Of Birth", "biography.placeOfBirth"],
     ["Alignment", "biography.alignment"],
 ])
+
 
