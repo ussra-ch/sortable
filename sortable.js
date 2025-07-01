@@ -12,6 +12,7 @@ let table = document.createElement("table")
 let arr = ["Icon", "Name", "Full Name", "Powerstats", "Race", "Gender", "Height", "Weight", "Place Of Birth", "Alignment"]
 let thead = document.createElement("thead")
 let data
+let choice = false //kat3ni rah dakchi msorti b ascending order
 
 for (let i of arr) {
     var th = document.createElement("th")
@@ -24,9 +25,7 @@ for (let i of arr) {
     btn.addEventListener("click", () => {
         console.log("Sorting column:", i);
         let clickValue = globMap.get(i)
-         sortAlpha(data, clickValue)
-        // console.log(res);
-        
+        sortAlpha(data, clickValue, choice)
         clearData();
         create(data, data.length);
     });
@@ -177,21 +176,27 @@ function getNestedValue(obj, path) {
   return path.split('.').reduce((acc, key) => acc && acc[key], obj);
 }
 
-function sortAlpha(data, path) {
+function sortAlpha(data, path, choice) {
     let alphabet = 'abcdefjhigklmnopqrstuvwxyz'
     data.sort((heroA, heroB) => {
         heroA = getNestedValue(heroA, path)
         heroB = getNestedValue(heroB, path)
-        if (heroA == "" && heroB == ""){
-            return 0
-        }else if (heroA == ""){
-            return 1
-        }else if (heroB == ""){
-            return -1
-        }
-        // console.log(heroA[0]);
-        // console.log(heroB[0]);
-            return alphabet.indexOf(heroA[0].toLowerCase()) - alphabet.indexOf(heroB[0].toLowerCase())
+            if (heroA == "" && heroB == ""){
+                choice = true
+                return 0
+            }else if (heroA == ""){
+                choice = true
+                return 1
+            }else if (heroB == ""){
+                choice = true
+                return -1
+            }
+            if (!choice){
+                let diff = alphabet.indexOf(heroA[0].toLowerCase()) - alphabet.indexOf(heroB[0].toLowerCase())
+            }else{
+                let diff = alphabet.indexOf(heroB[0].toLowerCase()) - alphabet.indexOf(heroA[0].toLowerCase())
+            }
+            return diff
     })
 }
 
